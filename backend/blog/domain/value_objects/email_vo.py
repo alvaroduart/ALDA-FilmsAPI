@@ -1,6 +1,5 @@
 import re
 
-
 class Email:
     def __init__(self, value: str):
         if not self._is_valid(value):
@@ -19,3 +18,4 @@ class Email:
 
     def __str__(self) -> str:
         return self._value
+

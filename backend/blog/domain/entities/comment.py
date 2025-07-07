@@ -1,7 +1,13 @@
+from datetime import datetime
+
 class Comment:
-    def __init__(self, id: str, post_id: str, user_id: str, comment: str, date: str):
+    def __init__(self, id: str, movieId: str, userId: str, userName: str, content: str, createdAt: datetime = None):
         self.id = id
-        self.post_id = post_id
-        self.user_id = user_id
-        self.comment = comment
-        self.date = date
+        self.movieId = movieId
+        self.userId = userId
+        self.userName = userName
+        self.content = content
+        self.createdAt = createdAt if createdAt is not None else datetime.now()
+        self.rating = None  
+
+

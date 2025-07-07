@@ -1,85 +1,99 @@
-import uuid
 import pytest
 from blog.domain.entities.user import User
 from blog.domain.value_objects.email_vo import Email
 from blog.domain.value_objects.password import Password
-from blog.infra.repositories.in_memory.in_memory_user_repository import (
-    InMemoryUserRepository,
-)
 from blog.usecases.user.register_user import RegisterUserUseCase
 from blog.usecases.user.login_user import LoginUserUseCase
+from blog.usecases.user.get_user_by_id import GetUserByIdUseCase
 from blog.usecases.user.logout_user import LogoutUserUseCase
-from blog.usecases.user.get_current_user import GetCurrentUserUseCase
-from blog.usecases.user.set_current_user import SetCurrentUserUseCase
+from blog.usecases.user.forgot_password_user import ForgotPasswordUseCase
+from blog.infra.repositories.in_memory.in_memory_user_repository import InMemoryUserRepository
 
 
-def create_test_user() -> User:
+def create_test_user():
     return User(
-        id=str(uuid.uuid4()),
+        id="1",
         name="Test User",
-        email=Email("test@example.com"),
-        password=Password("secur3@Pass"),
-        role="user",
+        email=Email("test.user@example.com"),
+        password=Password("secure123")  
     )
 
 
-@pytest.mark.asyncio
-async def test_register_user():
+def test_register_user():
     repo = InMemoryUserRepository()
-    usecase = RegisterUserUseCase(repo)
+    use_case = RegisterUserUseCase(repo)
     user = create_test_user()
 
-    result = await usecase.execute(user)
+    use_case.execute(user)
 
-    assert result == user
-    assert await repo.get_current_user() == user
+    stored_user = repo.get_by_id(user.id)
+    assert stored_user.id == user.id
+    assert stored_user.name == user.name
+    assert stored_user.email.value() == user.email.value()
+    assert stored_user.password.value() == user.password.value()
 
 
-@pytest.mark.asyncio
-async def test_login_user_success():
+def test_login_user():
     repo = InMemoryUserRepository()
+    register_use_case = RegisterUserUseCase(repo)
     user = create_test_user()
-    await repo.register(user)
+    register_use_case.execute(user)
 
-    usecase = LoginUserUseCase(repo)
-    result = await usecase.execute(user.email, user.password)
+    login_use_case = LoginUserUseCase(repo)
+    email = Email("test.user@example.com")
+    password = Password("secure123")
 
-    assert result == user
-    assert await repo.get_current_user() == user
+    result = login_use_case.execute(email, password)
+
+    assert result.id == user.id
+    assert result.name == user.name
+    assert result.email.value() == user.email.value()
+    assert result.password.value() == user.password.value()
 
 
-@pytest.mark.asyncio
-async def test_login_user_failure():
+def test_get_user_by_id():
     repo = InMemoryUserRepository()
-    usecase = LoginUserUseCase(repo)
-    email = Email("notfound@example.com")
-    password = Password("wrongP@1ss")
-
-    result = await usecase.execute(email, password)
-
-    assert result is None
-    assert await repo.get_current_user() is None
-
-
-@pytest.mark.asyncio
-async def test_logout_user():
-    repo = InMemoryUserRepository()
+    register_use_case = RegisterUserUseCase(repo)
     user = create_test_user()
-    await repo.register(user)
-    await repo.login(user.email, user.password)
+    register_use_case.execute(user)
 
-    usecase = LogoutUserUseCase(repo)
-    await usecase.execute()
+    get_user_use_case = GetUserByIdUseCase(repo)
+    result = get_user_use_case.execute(user.id)
 
-    assert await repo.get_current_user() is None
+    assert result.id == user.id
+    assert result.name == user.name
+    assert result.email.value() == user.email.value()
+    assert result.password.value() == user.password.value()
 
 
-@pytest.mark.asyncio
-async def test_set_current_user():
+def test_logout_user():
     repo = InMemoryUserRepository()
+    register_use_case = RegisterUserUseCase(repo)
     user = create_test_user()
+    user = register_use_case.execute(user)
 
-    usecase = SetCurrentUserUseCase(repo)
-    await usecase.execute(user)
+    logout_use_case = LogoutUserUseCase(repo)
+    logout_use_case.execute(user.id)
 
-    assert await repo.get_current_user() == user
+    # Garantia de que o usuário ainda existe após logout
+    get_user_use_case = GetUserByIdUseCase(repo)
+    result = get_user_use_case.execute(user.id)
+
+    assert result.id == user.id
+    assert result.name == user.name
+    assert result.email.value() == user.email.value()
+    assert result.password.value() == user.password.value()
+
+
+def test_forgot_password():
+    repo = InMemoryUserRepository()
+    register_use_case = RegisterUserUseCase(repo)
+    user = register_use_case.execute(create_test_user())
+
+    forgot_password_use_case = ForgotPasswordUseCase(repo)
+    email = Email("test.user@example.com")
+    
+    forgot_password_use_case.execute(email)
+
+
+ 

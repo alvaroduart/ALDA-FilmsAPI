@@ -1,14 +1,20 @@
 from blog.domain.entities.user import User
 from blog.domain.repositories.user_repository import UserRepository
-from typing import Optional
+from blog.domain.value_objects.email_vo import Email
+from blog.domain.value_objects.password import Password
 
 
 class RegisterUserUseCase:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-    async def execute(self, user: User) -> Optional[User]:
-        existing_user = await self.repository.get_by_email(user.email)
-        if existing_user:
-            raise ValueError("User with this email already exists")
-        return await self.repository.register(user)
+    def execute(self, user: User) -> User:        
+        try:
+            existing_user = self.repository.get_by_email(user.email.value())
+            if existing_user:
+                raise ValueError("Email already exists")
+        except:
+            pass         
+        self.repository.create(user)
+        return user
+

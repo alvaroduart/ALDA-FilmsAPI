@@ -1,16 +1,25 @@
 from abc import ABC, abstractmethod
 from blog.domain.entities.comment import Comment
 
-
-class CommentRepository(ABC):
+class CommentRepository(ABC):    
+    
     @abstractmethod
-    def get_comments_by_post(self, post_id: str) -> list[Comment]: ...
+    def get_by_movie_id(self, movie_id: str) -> list[Comment]:
+        pass
+    
+    @abstractmethod
+    def create(self, comment: Comment) -> None:
+        pass
 
     @abstractmethod
-    def get_comments_by_user(self, user_id: str) -> list[Comment]: ...
+    def update(self, comment: Comment) -> None:
+        pass
 
     @abstractmethod
-    def add_comment(self, comment: Comment) -> Comment: ...
+    def delete(self, comment_id: str) -> None: 
+        pass
 
     @abstractmethod
-    def delete_comment(self, comment_id: str) -> None: ...
+    def rate(self, comment_id: str, rating: int) -> None:        
+        pass
+

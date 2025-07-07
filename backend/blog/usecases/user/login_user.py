@@ -1,13 +1,20 @@
-from blog.domain.value_objects.email_vo import Email
-from blog.domain.value_objects.password import Password
 from blog.domain.entities.user import User
 from blog.domain.repositories.user_repository import UserRepository
-from typing import Optional
+from blog.domain.value_objects.email_vo import Email
+from blog.domain.value_objects.password import Password
 
 
 class LoginUserUseCase:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-    async def execute(self, email: Email, password: Password) -> Optional[User]:
-        return await self.repository.login(email, password)
+    def execute(self, email: Email, password: Password) -> User:
+        user = self.repository.get_by_email(email)
+        if not user:
+            raise ValueError("User not found")
+        
+        if user.password.value() != password.value():
+            raise ValueError("Invalid password")
+        
+        return user
+
