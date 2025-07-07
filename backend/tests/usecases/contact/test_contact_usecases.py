@@ -9,7 +9,7 @@ def test_create_contact_use_case():
     repo = InMemoryContactRepository()
     use_case = CreateContactUseCase(repo)
 
-    contact = Contact(name="John Doe", email="john.doe@example.com", question="How can I reset my password?")
+    contact = Contact(name="John Doe", email="john.doe@example.com", message="How can I reset my password?")
 
     use_case.execute(contact)
 

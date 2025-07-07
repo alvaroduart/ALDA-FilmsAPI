@@ -8,6 +8,6 @@ class Comment:
         self.userName = userName
         self.content = content
         self.createdAt = createdAt if createdAt is not None else datetime.now()
-        self.rating = None  
+      
 
 

@@ -8,7 +8,7 @@ app = FastAPI(
     title="Blog API",
     description="API backend do Blog com Clean Architecture, FastAPI e PostgreSQL",
     version="1.0.0",
-    contact={"name": "Lázaro Eduardo", "email": "lazaro@exemplo.com"},
+    contact={"name": "Álvaro Mendes", "email": "alvarohenriqueduartemendes98.com"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=openapi_tags,
 )

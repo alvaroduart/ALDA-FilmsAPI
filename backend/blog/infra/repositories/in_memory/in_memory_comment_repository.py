@@ -1,26 +1,24 @@
-from blog.domain.repositories.comment_repository import CommentRepository
 from blog.domain.entities.comment import Comment
-from typing import List, Optional
-import pytest
+from blog.domain.repositories.comment_repository import CommentRepository
 
 
 class InMemoryCommentRepository(CommentRepository):
     def __init__(self):
         self._comments = {}
 
-    @pytest.mark.asyncio
-    async def get_comments_by_post(self, post_id: str) -> List[Comment]:
-        return [c for c in self._comments.values() if c.post_id == post_id]
+    def get_by_movie_id(self, movie_id: str) -> list[Comment]:
+        return [comment for comment in self._comments.values() 
+                if comment.movieId == movie_id] 
 
-    @pytest.mark.asyncio
-    async def get_comments_by_user(self, user_id: str) -> List[Comment]:
-        return [c for c in self._comments.values() if c.user_id == user_id]
-
-    @pytest.mark.asyncio
-    async def add_comment(self, comment: Comment) -> Comment:
+    def create(self, comment: Comment) -> None:
         self._comments[comment.id] = comment
-        return comment
 
-    @pytest.mark.asyncio
-    async def delete_comment(self, comment_id: str) -> None:
-        self._comments.pop(comment_id, None)
+    def update(self, comment: Comment) -> None:
+        if comment.id not in self._comments:
+            raise ValueError(f"Comment with id {comment.id} not found")
+        self._comments[comment.id] = comment
+
+    def delete(self, comment_id: str) -> None:
+        if comment_id not in self._comments:
+            raise ValueError(f"Comment with id {comment_id} not found")
+        del self._comments[comment_id]

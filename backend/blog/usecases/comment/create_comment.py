@@ -9,7 +9,5 @@ class AddCommentUseCase:
     def execute(self, comment: Comment) -> Comment:
         self.repository.create(comment)
         return comment
-    
-    def rate_comment(self, comment_id: str, rating: int) -> None:
-        self.repository.rate(comment_id, rating)
+ 
 

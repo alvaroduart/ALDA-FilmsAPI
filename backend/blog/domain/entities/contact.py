@@ -1,7 +1,7 @@
 class Contact:
-    def __init__(self, name: str, email: str, question: str):
+    def __init__(self, name: str, email: str, message: str):
         self.name = name
         self.email = email
-        self.question = question
+        self.message = message
 
     

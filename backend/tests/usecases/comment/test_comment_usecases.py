@@ -61,17 +61,3 @@ def test_delete_comment():
     stored_comments = repo.get_by_movie_id("movie1")
     assert len(stored_comments) == 0
 
-def test_rate_comment():
-    repo = InMemoryCommentRepository()
-    add_use_case = AddCommentUseCase(repo)
-    comment = Comment(id="1", userId="user1", userName="User One", movieId="movie1", content="Great movie!")
-    add_use_case.execute(comment)
-
-    add_use_case.rate_comment("1", 5)
-    
-    stored_comments = repo.get_by_movie_id("movie1")
-    assert len(stored_comments) == 1
-    assert stored_comments[0].rating == 5
-
-    with pytest.raises(ValueError):
-        add_use_case.rate_comment("1", 6)  

@@ -28,11 +28,11 @@ def test_contact_creation():
     contact = Contact(
         name="Alice",
         email="alice@example.com",
-        question="What time does the movie start?"
+        message="What time does the movie start?"
     )
     assert contact.name == "Alice"
     assert contact.email == "alice@example.com"
-    assert contact.question == "What time does the movie start?"
+    assert contact.message == "What time does the movie start?"
 
 def test_favorite_creation():
     fav = Favorite(

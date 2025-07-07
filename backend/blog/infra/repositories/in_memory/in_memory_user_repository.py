@@ -1,48 +1,37 @@
-from blog.domain.repositories.user_repository import UserRepository
 from blog.domain.entities.user import User
+from blog.domain.repositories.user_repository import UserRepository
 from blog.domain.value_objects.email_vo import Email
 from blog.domain.value_objects.password import Password
-from typing import Optional
-import pytest
 
 
 class InMemoryUserRepository(UserRepository):
     def __init__(self):
         self._users = {}
-        self._current_user_id = None
 
-    @pytest.mark.asyncio
-    async def register(self, user: User) -> User:
+    def create(self, user: User) -> None:
         self._users[user.id] = user
-        self._current_user_id = user.id
-        return user
 
-    @pytest.mark.asyncio
-    async def login(self, email: Email, password: Password) -> Optional[User]:
+    def get_by_id(self, user_id: str) -> User:
+        if user_id in self._users:
+            return self._users[user_id]
+        raise ValueError(f"User with id {user_id} not found")
+
+    def get_by_email(self, email: Email) -> User | None:
+        for user in self._users.values():
+            if user.email.value() == email.value():
+                return user
+        return None
+
+    def login(self, email: Email, password: Password) -> User:
         for user in self._users.values():
             if user.email == email and user.password == password:
-                self._current_user_id = user.id
                 return user
-        return None
+        raise ValueError("Invalid email or password")
 
-    @pytest.mark.asyncio
-    async def logout(self) -> None:
-        self._current_user_id = None
+    def logout(self, user_id: str) -> None:
+        if user_id not in self._users:
+            raise ValueError(f"User with id {user_id} not found")
 
-    @pytest.mark.asyncio
-    async def get_current_user(self) -> Optional[User]:
-        if self._current_user_id is None:
-            return None
-        return self._users.get(self._current_user_id)
-
-    @pytest.mark.asyncio
-    async def set_current_user(self, user: User) -> None:
-        self._users[user.id] = user
-        self._current_user_id = user.id
-
-    @pytest.mark.asyncio
-    async def get_by_email(self, email: Email) -> None:
-        for user in self._users.values():
-            if user.email == email:
-                return user
-        return None
+    def forgot_password(self, email: Email) -> None:
+        if not self.get_by_email(email):
+            raise ValueError(f"User with email {email.value()} not found")
