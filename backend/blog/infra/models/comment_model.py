@@ -9,11 +9,15 @@ class CommentModel(Base):
     __tablename__ = "comments"
 
     id: Mapped[str] = mapped_column(sa.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    movieId: Mapped[str] = mapped_column(sa.String(36), nullable=False)
-    userId: Mapped[str] = mapped_column(sa.String(36), nullable=False)
+    movieId: Mapped[str] = mapped_column(sa.String(36), sa.ForeignKey("movies.id"), nullable=False)
+    userId: Mapped[str] = mapped_column(sa.String(36), sa.ForeignKey("users.id"), nullable=False)
     userName: Mapped[str] = mapped_column(sa.String(100), nullable=False)
     content: Mapped[str] = mapped_column(sa.Text, nullable=False)
     createdAt: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
+
+    # Relacionamentos
+    movie = relationship("MovieModel", back_populates="comments")
+    user = relationship("UserModel", back_populates="comments")
 
     def to_entity(self) -> Comment:
         return Comment(
@@ -24,9 +28,6 @@ class CommentModel(Base):
             content=self.content,
             createdAt=self.createdAt
         )
-    
-    movie = relationship("MovieModel", back_populates="comments")
-    user = relationship("UserModel", back_populates="comments")
 
     @classmethod
     def from_entity(cls, comment: Comment) -> "CommentModel":
@@ -38,5 +39,3 @@ class CommentModel(Base):
             content=comment.content,
             createdAt=comment.createdAt
         )
-    
-  

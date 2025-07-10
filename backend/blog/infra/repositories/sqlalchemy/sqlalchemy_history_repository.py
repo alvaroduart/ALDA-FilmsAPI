@@ -14,16 +14,19 @@ class SQLAlchemyHistoryRepository(HistoryRepository):
         self.session.add(history_model)
         await self.session.commit()
 
-    async def get_user_history(self, user_id: str) -> list[History]:
+    async def get_by_user_id(self, user_id: str) -> list[History]:
         result = await self.session.execute(
             select(HistoryModel).where(HistoryModel.user_id == user_id)
         )
         history_models = result.scalars().all()
         return [model.to_entity() for model in history_models]
 
-    async def remove_history(self, history_id: str) -> None:
+    async def remove_from_history(self, user_id: str, movie_id: str) -> None:
         result = await self.session.execute(
-            select(HistoryModel).where(HistoryModel.id == history_id)
+            select(HistoryModel).where(
+                HistoryModel.user_id == user_id,
+                HistoryModel.movie_id == movie_id
+            )
         )
         history_model = result.scalar_one_or_none()
         if history_model:

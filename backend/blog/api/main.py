@@ -1,9 +1,16 @@
 from fastapi import FastAPI
-from fastapi.security import HTTPBearer
 from fastapi.middleware.cors import CORSMiddleware
-from blog.api.routes import movie_route, user_route, comment_route, favorite_route, history_route, contact_route
-from blog.api.openapi_tags import openapi_tags
 
+from blog.api.routes import (
+    user_route,
+    movie_route,
+    comment_route,
+    favorite_route,
+    history_route,
+    contact_route
+)
+
+from blog.api.openapi_tags import openapi_tags
 
 app = FastAPI(
     title="Films API",
@@ -27,7 +34,7 @@ app.add_middleware(
 def ola():
     return {"olá": "fastapi"}
 
-
+# Inclusão das rotas
 app.include_router(user_route.router, prefix="/users", tags=["Users"])
 app.include_router(movie_route.router, prefix="/movies", tags=["Movies"])
 app.include_router(comment_route.router, prefix="/comments", tags=["Comments"])

@@ -22,7 +22,7 @@ class ContactModel(Base):
             message=self.message,
             createdAt=self.createdAt
         )
-    
+
     @classmethod
     def from_entity(cls, contact: Contact) -> "ContactModel":
         return cls(
@@ -32,4 +32,3 @@ class ContactModel(Base):
             message=contact.message,
             createdAt=contact.createdAt
         )
-    
