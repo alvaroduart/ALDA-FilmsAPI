@@ -14,11 +14,9 @@ class HistoryModel(Base):
     createdAt: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
 
     def to_entity(self) -> History:
-        return History(
-            id=self.id,
+        return History(           
             userId=self.userId,
-            movieId=self.movieId,
-            createdAt=self.createdAt
+            movieId=self.movieId,            
         )
     
     user = relationship("UserModel", back_populates="histories")
@@ -26,9 +24,7 @@ class HistoryModel(Base):
     
     @classmethod
     def from_entity(cls, history: History) -> "HistoryModel":
-        return cls(
-            id=history.id,
+        return cls(           
             userId=history.userId,
-            movieId=history.movieId,
-            createdAt=history.createdAt
+            movieId=history.movieId,            
         )

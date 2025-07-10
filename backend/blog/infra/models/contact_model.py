@@ -33,11 +33,3 @@ class ContactModel(Base):
             createdAt=contact.createdAt
         )
     
-    def to_entity(self) -> Contact:
-        return Contact(
-            id=self.id,
-            name=self.name,
-            email=self.email,
-            message=self.message,
-            createdAt=self.createdAt
-        )

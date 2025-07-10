@@ -14,11 +14,9 @@ class FavoriteModel(Base):
     createdAt: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
 
     def to_entity(self) -> Favorite:
-        return Favorite(
-            id=self.id,
+        return Favorite(            
             userId=self.userId,
-            movieId=self.movieId,
-            createdAt=self.createdAt
+            movieId=self.movieId,            
         )
     
     user = relationship("UserModel", back_populates="favorites")
@@ -26,18 +24,10 @@ class FavoriteModel(Base):
     
     @classmethod
     def from_entity(cls, favorite: Favorite) -> "FavoriteModel":
-        return cls(
-            id=favorite.id,
+        return cls(            
             userId=favorite.userId,
-            movieId=favorite.movieId,
-            createdAt=favorite.createdAt
+            movieId=favorite.movieId,            
         )
     
-    def to_entity(self) -> Favorite:
-        return Favorite(
-            id=self.id,
-            userId=self.userId,
-            movieId=self.movieId,
-            createdAt=self.createdAt
-        )
+  
 

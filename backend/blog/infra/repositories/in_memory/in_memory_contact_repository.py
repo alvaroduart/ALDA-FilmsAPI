@@ -1,4 +1,4 @@
-from blog.domain.entities.favorite import Contact
+from blog.domain.entities.contact import Contact
 from blog.domain.repositories.contact_repository import ContactRepository
 
 class InMemoryContactRepository(ContactRepository):

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from blog.domain.entities.user import User
 from blog.domain.value_objects.email_vo import Email
 from blog.domain.value_objects.password import Password
+from typing import Optional
 
 class UserRepository(ABC):
     
@@ -21,6 +22,9 @@ class UserRepository(ABC):
         pass        
 
     @abstractmethod
-    def forgot_password(self, email: Email) -> None:
+    def get_by_email(self, email: Email) -> Optional[User]:
         pass
- 
+    
+    @abstractmethod
+    def get_current_user(self, user_id: str) -> User:
+        pass

@@ -4,6 +4,8 @@ from blog.domain.entities.user import User
 import uuid
 from datetime import datetime
 from blog.infra.database import Base
+from blog.domain.value_objects.email_vo import Email
+from blog.domain.value_objects.password import Password
 
 class UserModel(Base):
     __tablename__ = "users"
@@ -11,18 +13,16 @@ class UserModel(Base):
     id: Mapped[str] = mapped_column(sa.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username: Mapped[str] = mapped_column(sa.String(50), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(sa.String(100), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(sa.String(255), nullable=False)
-    createdAt: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
+    password: Mapped[str] = mapped_column(sa.String(255), nullable=False)    
 
     def to_entity(self) -> User:
         return User(
             id=self.id,
             name=self.name,
-            email=self.email,
-            password=self.password,
+            email=Email(self.email),
+            password=Password(self.password),
             favoriteMovies=[],
-            watchedMovies=[],
-            createdAt=self.createdAt
+            watchedMovies=[],            
         )
     
     favorites = relationship("FavoriteModel", back_populates="user")
@@ -36,6 +36,5 @@ class UserModel(Base):
             email=user.email,
             password=user.password,
             favoriteMovies=[],
-            watchedMovies=[],
-            createdAt=user.createdAt
+            watchedMovies=[],            
         )

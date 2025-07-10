@@ -10,7 +10,7 @@ class RegisterUserUseCase:
 
     def execute(self, user: User) -> User:        
         try:
-            existing_user = self.repository.get_by_email(user.email.value())
+            existing_user = self.repository.get_by_email(user.email)
             if existing_user:
                 raise ValueError("Email already exists")
         except:

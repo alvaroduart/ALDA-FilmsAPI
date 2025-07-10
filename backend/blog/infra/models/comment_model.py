@@ -39,12 +39,4 @@ class CommentModel(Base):
             createdAt=comment.createdAt
         )
     
-    def to_entity(self) -> Comment:
-        return Comment(
-            id=self.id,
-            movieId=self.movieId,
-            userId=self.userId,
-            userName=self.userName,
-            content=self.content,
-            createdAt=self.createdAt
-        )
+  

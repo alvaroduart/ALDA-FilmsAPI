@@ -1,5 +1,5 @@
 class Movie:
-    def __init__(self, id: str, title: str, image: str, rating: float, description: str = None, year: int = None, genre: str = None, duration: str = None, director: str = None, cast: list[str] = None):
+    def __init__(self, id: str, title: str, image: str, rating: float, description: str = '', year: int = 0, genre: str = '', duration: str = '', director: str = ''):
         self.id = id
         self.title = title
         self.image = image

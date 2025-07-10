@@ -1,7 +1,7 @@
 from datetime import datetime
 
 class Comment:
-    def __init__(self, id: str, movieId: str, userId: str, userName: str, content: str, createdAt: datetime = None):
+    def __init__(self, id: str, movieId: str, userId: str, userName: str, content: str, createdAt: datetime):
         self.id = id
         self.movieId = movieId
         self.userId = userId
