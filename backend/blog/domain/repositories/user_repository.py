@@ -28,3 +28,7 @@ class UserRepository(ABC):
     @abstractmethod
     async def get_current_user(self, user_id: str) -> User:
         pass
+
+    @abstractmethod
+    async def get_by_username(self, username: str) -> Optional[User]:       
+        pass

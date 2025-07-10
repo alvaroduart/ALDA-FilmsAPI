@@ -14,7 +14,7 @@ class LoginUserUseCase:
             raise ValueError("User not found")
         
         if user.password.value() != password.value():
-            raise ValueError("Invalid password")
+            raise ValueError("senha inválida")
         
         return user
 

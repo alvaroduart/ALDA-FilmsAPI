@@ -10,5 +10,5 @@ class GetCurrentUserUseCase:
     async def execute(self, user_id: str) -> Optional[User]:
         user = await self.repository.get_current_user(user_id)
         if not user:
-            raise ValueError("User not found")
+            raise ValueError("Usuário não encontrado")
         return user

@@ -53,3 +53,10 @@ class SQLAlchemyUserRepository(UserRepository):
     async def logout(self, user_id: str) -> None:
         # Não há lógica de logout persistente no banco (JWT é stateless)
         pass
+
+    async def get_by_username(self, username: str) -> User | None:
+        stmt = select(UserModel).where(UserModel.username == username)
+        result = await self.session.execute(stmt)
+        model = result.scalar_one_or_none()
+        return model.to_entity() if model else None
+

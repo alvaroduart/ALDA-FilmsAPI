@@ -9,5 +9,5 @@ class GetUserByEmailUseCase:
     async def execute(self, email: Email) -> User:
         user = await self.repository.get_by_email(email)
         if not user:
-            raise ValueError("User not found")
+            raise ValueError("Usuário não encontrado com este e-mail.")
         return user
