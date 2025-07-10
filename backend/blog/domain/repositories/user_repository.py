@@ -7,24 +7,24 @@ from typing import Optional
 class UserRepository(ABC):
     
     @abstractmethod
-    def get_by_id(self, user_id: str) -> User:
+    async def get_by_id(self, user_id: str) -> User:
         pass
 
     @abstractmethod
-    def create(self, user: User) -> None:
+    async def create(self, user: User) -> None:
         pass
     
     @abstractmethod
-    def login(self, email: Email, password: Password) -> User:
+    async def login(self, email: Email, password: Password) -> User:
         pass
     @abstractmethod
-    def logout(self, user_id: str) -> None:
+    async def logout(self, user_id: str) -> None:
         pass        
 
     @abstractmethod
-    def get_by_email(self, email: Email) -> Optional[User]:
+    async def get_by_email(self, email: Email) -> Optional[User]:
         pass
     
     @abstractmethod
-    def get_current_user(self, user_id: str) -> User:
+    async def get_current_user(self, user_id: str) -> User:
         pass

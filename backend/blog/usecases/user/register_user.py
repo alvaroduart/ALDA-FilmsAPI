@@ -8,13 +8,13 @@ class RegisterUserUseCase:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-    def execute(self, user: User) -> User:        
+    async def execute(self, user: User) -> User:        
         try:
-            existing_user = self.repository.get_by_email(user.email)
+            existing_user = await self.repository.get_by_email(user.email)
             if existing_user:
                 raise ValueError("Email already exists")
         except:
             pass         
-        self.repository.create(user)
+        await self.repository.create(user)
         return user
 

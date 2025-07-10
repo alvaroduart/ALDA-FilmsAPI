@@ -5,5 +5,5 @@ class CreateContactUseCase:
     def __init__(self, repository: ContactRepository):
         self.repository = repository
 
-    def execute(self, contact: Contact) -> None:
-        self.repository.create_contact(contact)
+    async def execute(self, contact: Contact) -> None:
+        await self.repository.create_contact(contact)

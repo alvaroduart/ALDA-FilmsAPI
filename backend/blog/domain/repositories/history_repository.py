@@ -3,18 +3,18 @@ from blog.domain.entities.history import History
 
 class HistoryRepository(ABC):
     @abstractmethod
-    def get_by_user_id(self, user_id: str) -> list[History]:
+    async def get_by_user_id(self, user_id: str) -> list[History]:
         pass
 
     @abstractmethod
-    def add_to_history(self, history: History) -> None:
+    async def add_to_history(self, history: History) -> None:
         pass
 
     @abstractmethod
-    def remove_from_history(self, user_id: str, movie_id: str) -> None:
+    async def remove_from_history(self, user_id: str, movie_id: str) -> None:
         pass
 
     @abstractmethod
-    def is_in_history(self, user_id: str, movie_id: str) -> bool:
+    async def is_in_history(self, user_id: str, movie_id: str) -> bool:
         pass
 

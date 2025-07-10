@@ -6,6 +6,6 @@ class SearchMoviesUseCase:
     def __init__(self, repository: MovieRepository):
         self.repository = repository
 
-    def execute(self, query: str) -> list[Movie]:
-        return self.repository.search(query)
+    async def execute(self, query: str) -> list[Movie]:
+        return await self.repository.search(query)
 

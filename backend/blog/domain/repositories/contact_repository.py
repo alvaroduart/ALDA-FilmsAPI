@@ -3,5 +3,5 @@ from blog.domain.entities.contact import Contact
 
 class ContactRepository(ABC):
     @abstractmethod
-    def create_contact(self, contact: Contact) -> None:        
+    async def create_contact(self, contact: Contact) -> Contact:        
         pass

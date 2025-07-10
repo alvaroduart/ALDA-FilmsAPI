@@ -5,6 +5,6 @@ class RemoveFromHistoryUseCase:
     def __init__(self, repository: HistoryRepository):
         self.repository = repository
 
-    def execute(self, user_id: str, movie_id: str) -> None:
-        self.repository.remove_from_history(user_id, movie_id)
+    async def execute(self, user_id: str, movie_id: str) -> None:
+        await self.repository.remove_from_history(user_id, movie_id)
 

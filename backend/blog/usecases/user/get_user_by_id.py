@@ -6,6 +6,6 @@ class GetUserByIdUseCase:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-    def execute(self, user_id: str) -> User:
-        return self.repository.get_by_id(user_id)
+    async def execute(self, user_id: str) -> User:
+        return await self.repository.get_by_id(user_id)
 

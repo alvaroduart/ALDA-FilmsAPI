@@ -6,8 +6,8 @@ class AddToFavoritesUseCase:
     def __init__(self, repository: FavoriteRepository):
         self.repository = repository
 
-    def execute(self, user_id: str, movie_id: str) -> None:
+    async def execute(self, user_id: str, movie_id: str) -> None:
         if not self.repository.is_favorite(user_id, movie_id):
             favorite = Favorite(user_id, movie_id)
-            self.repository.add_favorite(favorite)
+            await self.repository.add_favorite(favorite)
 

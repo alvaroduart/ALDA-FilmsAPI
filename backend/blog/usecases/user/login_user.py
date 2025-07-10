@@ -8,8 +8,8 @@ class LoginUserUseCase:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-    def execute(self, email: Email, password: Password) -> User:
-        user = self.repository.get_by_email(email)
+    async def execute(self, email: Email, password: Password) -> User:
+        user = await self.repository.get_by_email(email)
         if not user:
             raise ValueError("User not found")
         

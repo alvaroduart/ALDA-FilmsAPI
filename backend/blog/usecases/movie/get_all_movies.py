@@ -7,6 +7,6 @@ class GetAllMoviesUseCase:
     def __init__(self, repository: MovieRepository):
         self.repository = repository
 
-    def execute(self) -> List[Movie]:
-        return self.repository.get_all()
+    async def execute(self) -> List[Movie]:
+        return await self.repository.get_all()
 

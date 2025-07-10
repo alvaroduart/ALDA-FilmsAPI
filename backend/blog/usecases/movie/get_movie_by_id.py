@@ -6,6 +6,6 @@ class GetMovieByIdUseCase:
     def __init__(self, repository: MovieRepository):
         self.repository = repository
 
-    def execute(self, movie_id: str) -> Movie:
-        return self.repository.get_by_id(movie_id)
+    async def execute(self, movie_id: str) -> Movie:
+        return await self.repository.get_by_id(movie_id)
 
