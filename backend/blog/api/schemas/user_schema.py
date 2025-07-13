@@ -26,9 +26,9 @@ class UserOutput(BaseModel):
     @classmethod
     def from_entity(cls, user):
         return cls(
-            id=user.id,
-            username=user.name,
-            email=user.email.value(),  # corrigido
-            favorites=[m.id for m in user.favoriteMovies],  # garantir strings
-            history=[m.id for m in user.watchedMovies],     # garantir strings
+            id=str(user.id),
+            username=getattr(user, "username", getattr(user, "name", "")),
+            email=user.email.value(),
+            favorites=[str(m.id) for m in user.favoriteMovies],
+            history=[str(m.id) for m in user.watchedMovies],
         )
