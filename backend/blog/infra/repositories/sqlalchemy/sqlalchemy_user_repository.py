@@ -61,5 +61,3 @@ class SQLAlchemyUserRepository(UserRepository):
         if user_model:
             return user_model.to_entity()
         return None
-
-

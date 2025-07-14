@@ -5,12 +5,19 @@ import uuid
 from datetime import datetime
 from blog.infra.database import Base
 
+
 class FavoriteModel(Base):
     __tablename__ = "favorites"
 
-    id: Mapped[str] = mapped_column(sa.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    userId: Mapped[str] = mapped_column(sa.String(36), sa.ForeignKey("users.id"), nullable=False)
-    movieId: Mapped[str] = mapped_column(sa.String(36), sa.ForeignKey("movies.id"), nullable=False)
+    id: Mapped[str] = mapped_column(
+        sa.String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    userId: Mapped[str] = mapped_column(
+        sa.String(36), sa.ForeignKey("users.id"), nullable=False
+    )
+    movieId: Mapped[str] = mapped_column(
+        sa.String(36), sa.ForeignKey("movies.id"), nullable=False
+    )
     createdAt: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
 
     # Relacionamentos

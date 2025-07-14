@@ -8,4 +8,3 @@ class SearchMoviesUseCase:
 
     async def execute(self, query: str) -> list[Movie]:
         return await self.repository.search(query)
-

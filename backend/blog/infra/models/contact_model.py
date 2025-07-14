@@ -5,10 +5,13 @@ import uuid
 from datetime import datetime
 from blog.infra.database import Base
 
+
 class ContactModel(Base):
     __tablename__ = "contacts"
 
-    id: Mapped[str] = mapped_column(sa.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id: Mapped[str] = mapped_column(
+        sa.String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
     name: Mapped[str] = mapped_column(sa.String(100), nullable=False)
     email: Mapped[str] = mapped_column(sa.String(100), nullable=False)
     message: Mapped[str] = mapped_column(sa.Text, nullable=False)
@@ -20,7 +23,7 @@ class ContactModel(Base):
             name=self.name,
             email=self.email,
             message=self.message,
-            createdAt=self.createdAt
+            createdAt=self.createdAt,
         )
 
     @classmethod
@@ -30,5 +33,5 @@ class ContactModel(Base):
             name=contact.name,
             email=contact.email,
             message=contact.message,
-            createdAt=contact.createdAt
+            createdAt=contact.createdAt,
         )

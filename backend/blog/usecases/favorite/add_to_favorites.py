@@ -10,4 +10,3 @@ class AddToFavoritesUseCase:
         if not self.repository.is_favorite(user_id, movie_id):
             favorite = Favorite(user_id, movie_id)
             await self.repository.add_favorite(favorite)
-

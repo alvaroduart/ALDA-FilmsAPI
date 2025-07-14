@@ -9,5 +9,3 @@ class AddCommentUseCase:
     async def execute(self, comment: Comment) -> Comment:
         await self.repository.create(comment)
         return comment
- 
-

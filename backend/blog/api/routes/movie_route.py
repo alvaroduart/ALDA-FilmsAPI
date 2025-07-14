@@ -15,11 +15,12 @@ import uuid
 security = HTTPBearer()
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
+
 @router.post("/", response_model=MovieOutput)
 async def create_movie(
     data: CreateMovieInput,
     credentials=Depends(security),
-    repo: MovieRepository = Depends(get_movie_repository)
+    repo: MovieRepository = Depends(get_movie_repository),
 ):
     movie = Movie(
         id=data.movieid or str(uuid.uuid4()),
@@ -29,33 +30,33 @@ async def create_movie(
         description=data.description,
         genre=data.genre,
         duration=data.duration,
-        director=data.director
+        director=data.director,
     )
     usecase = CreateMovieUseCase(repo)
     await usecase.execute(movie)
     return MovieOutput.from_entity(movie)
 
+
 @router.get("/", response_model=List[MovieOutput])
-async def get_all_movies(
-    repo: MovieRepository = Depends(get_movie_repository)
-):
+async def get_all_movies(repo: MovieRepository = Depends(get_movie_repository)):
     usecase = GetAllMoviesUseCase(repo)
     movies = await usecase.execute()
     return [MovieOutput.from_entity(m) for m in movies]
 
+
 @router.get("/{movie_id}", response_model=MovieOutput)
 async def get_movie_by_id(
-    movie_id: str,
-    repo: MovieRepository = Depends(get_movie_repository)
+    movie_id: str, repo: MovieRepository = Depends(get_movie_repository)
 ):
     usecase = GetMovieByIdUseCase(repo)
     movie = await usecase.execute(movie_id)
     return MovieOutput.from_entity(movie)
 
+
 @router.get("/search/", response_model=List[MovieOutput])
 async def search_movies(
     query: str = Query(..., min_length=1),
-    repo: MovieRepository = Depends(get_movie_repository)
+    repo: MovieRepository = Depends(get_movie_repository),
 ):
     usecase = SearchMoviesUseCase(repo)
     movies = await usecase.execute(query)

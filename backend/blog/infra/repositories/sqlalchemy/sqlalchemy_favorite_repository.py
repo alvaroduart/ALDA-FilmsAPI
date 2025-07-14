@@ -24,8 +24,7 @@ class SQLAlchemyFavoriteRepository(FavoriteRepository):
     async def remove_favorite(self, user_id: str, movie_id: str) -> None:
         result = await self.session.execute(
             select(FavoriteModel).where(
-                FavoriteModel.userId == user_id,
-                FavoriteModel.movieId == movie_id
+                FavoriteModel.userId == user_id, FavoriteModel.movieId == movie_id
             )
         )
         favorite_model = result.scalar_one_or_none()
@@ -38,8 +37,7 @@ class SQLAlchemyFavoriteRepository(FavoriteRepository):
     async def is_favorite(self, user_id: str, movie_id: str) -> bool:
         result = await self.session.execute(
             select(FavoriteModel).where(
-                FavoriteModel.userId == user_id,
-                FavoriteModel.movieId == movie_id
+                FavoriteModel.userId == user_id, FavoriteModel.movieId == movie_id
             )
         )
         return result.scalar_one_or_none() is not None

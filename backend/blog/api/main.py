@@ -7,7 +7,7 @@ from blog.api.routes import (
     comment_route,
     favorite_route,
     history_route,
-    contact_route
+    contact_route,
 )
 
 from blog.api.openapi_tags import openapi_tags
@@ -16,7 +16,10 @@ app = FastAPI(
     title="Films API",
     description="API backend de Filmes com Clean Architecture, FastAPI e PostgreSQL",
     version="1.0.0",
-    contact={"name": "Álvaro Mendes", "email": "alvarohenriqueduartemendes98@gmail.com"},
+    contact={
+        "name": "Álvaro Mendes",
+        "email": "alvarohenriqueduartemendes98@gmail.com",
+    },
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=openapi_tags,
 )
@@ -30,9 +33,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def ola():
     return {"olá": "fastapi"}
+
 
 # Inclusão das rotas
 app.include_router(user_route.router, prefix="/users", tags=["Users"])

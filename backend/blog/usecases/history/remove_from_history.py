@@ -7,4 +7,3 @@ class RemoveFromHistoryUseCase:
 
     async def execute(self, user_id: str, movie_id: str) -> None:
         await self.repository.remove_from_history(user_id, movie_id)
-

@@ -9,4 +9,3 @@ class GetUserHistoryUseCase:
 
     async def execute(self, user_id: str) -> List[History]:
         return await self.repository.get_by_user_id(user_id)
-

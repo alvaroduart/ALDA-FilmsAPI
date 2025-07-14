@@ -9,4 +9,3 @@ class GetCommentsByMovieUseCase:
 
     async def execute(self, movie_id: str) -> List[Comment]:
         return await self.repository.get_by_movie_id(movie_id)
-

@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from blog.domain.entities.comment import Comment
 
-class CommentRepository(ABC):    
-    
+
+class CommentRepository(ABC):
+
     @abstractmethod
     async def get_by_movie_id(self, movie_id: str) -> list[Comment]:
         pass
-    
+
     @abstractmethod
     async def create(self, comment: Comment) -> None:
         pass
@@ -16,8 +17,5 @@ class CommentRepository(ABC):
         pass
 
     @abstractmethod
-    async def delete(self, comment_id: str) -> None: 
+    async def delete(self, comment_id: str) -> None:
         pass
-
-   
-

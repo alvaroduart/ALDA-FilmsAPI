@@ -2,7 +2,6 @@ from blog.domain.entities.comment import Comment
 from blog.domain.repositories.comment_repository import CommentRepository
 
 
-
 class UpdateCommentUseCase:
     def __init__(self, repository: CommentRepository):
         self.repository = repository

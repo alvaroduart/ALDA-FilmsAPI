@@ -25,7 +25,7 @@ class InMemoryUserRepository(UserRepository):
             if user.email.value() == email.value():
                 return user
         return None
-    
+
     @pytest.mark.asyncio
     async def login(self, email: Email, password: Password) -> User:
         for user in self._users.values():

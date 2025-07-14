@@ -8,4 +8,3 @@ class GetUserByIdUseCase:
 
     async def execute(self, user_id: str) -> User:
         return await self.repository.get_by_id(user_id)
-

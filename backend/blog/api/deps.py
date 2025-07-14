@@ -6,12 +6,24 @@ from typing import AsyncGenerator, Any
 from blog.api.settings import settings
 from blog.domain.entities.user import User
 
-from blog.infra.repositories.sqlalchemy.sqlalchemy_user_repository import SQLAlchemyUserRepository
-from blog.infra.repositories.sqlalchemy.sqlalchemy_movie_repository import SQLAlchemyMovieRepository
-from blog.infra.repositories.sqlalchemy.sqlalchemy_comment_repository import SQLAlchemyCommentRepository
-from blog.infra.repositories.sqlalchemy.sqlalchemy_favorite_repository import SQLAlchemyFavoriteRepository
-from blog.infra.repositories.sqlalchemy.sqlalchemy_history_repository import SQLAlchemyHistoryRepository
-from blog.infra.repositories.sqlalchemy.sqlalchemy_contact_repository import SQLAlchemyContactRepository
+from blog.infra.repositories.sqlalchemy.sqlalchemy_user_repository import (
+    SQLAlchemyUserRepository,
+)
+from blog.infra.repositories.sqlalchemy.sqlalchemy_movie_repository import (
+    SQLAlchemyMovieRepository,
+)
+from blog.infra.repositories.sqlalchemy.sqlalchemy_comment_repository import (
+    SQLAlchemyCommentRepository,
+)
+from blog.infra.repositories.sqlalchemy.sqlalchemy_favorite_repository import (
+    SQLAlchemyFavoriteRepository,
+)
+from blog.infra.repositories.sqlalchemy.sqlalchemy_history_repository import (
+    SQLAlchemyHistoryRepository,
+)
+from blog.infra.repositories.sqlalchemy.sqlalchemy_contact_repository import (
+    SQLAlchemyContactRepository,
+)
 
 from blog.infra.database import async_session
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -72,7 +84,9 @@ async def get_current_user(
     )
 
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         user_id = payload.get("sub")
         if not isinstance(user_id, str):
             raise credentials_exception

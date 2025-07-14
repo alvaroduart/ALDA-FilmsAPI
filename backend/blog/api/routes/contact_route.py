@@ -10,17 +10,17 @@ from datetime import datetime
 
 router = APIRouter(prefix="/contact", tags=["Contact"])
 
+
 @router.post("/", response_model=ContactOutput)
 async def create_contact(
-    data: ContactInput,
-    repo: ContactRepository = Depends(get_contact_repository)
+    data: ContactInput, repo: ContactRepository = Depends(get_contact_repository)
 ):
     contact = Contact(
         id=str(uuid.uuid4()),
         name=data.name,
         email=str(data.email),
         message=data.message,
-        createdAt=datetime.now()
+        createdAt=datetime.now(),
     )
     usecase = CreateContactUseCase(repo)
     await usecase.execute(contact)

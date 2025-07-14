@@ -15,10 +15,10 @@ import uuid
 security = HTTPBearer()
 router = APIRouter(prefix="/users", tags=["Users"])
 
+
 @router.post("/register", response_model=UserOutput)
 async def register_user(
-    user: UserCreateInput,
-    repo: UserRepository = Depends(get_user_repository)
+    user: UserCreateInput, repo: UserRepository = Depends(get_user_repository)
 ):
     try:
         user_entity = User(
@@ -27,7 +27,7 @@ async def register_user(
             email=Email(user.email),
             password=Password(user.password),
             favoriteMovies=[],
-            watchedMovies=[]
+            watchedMovies=[],
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -40,16 +40,15 @@ async def register_user(
         raise e
     return UserOutput.from_entity(new_user)
 
+
 @router.post("/login")
 async def login_user(
-    login_data: LoginInput,
-    repo: UserRepository = Depends(get_user_repository)
+    login_data: LoginInput, repo: UserRepository = Depends(get_user_repository)
 ):
     try:
         usecase = LoginUserUseCase(repo)
         token = await usecase.execute(
-            Email(login_data.email),
-            Password(login_data.password)
+            Email(login_data.email), Password(login_data.password)
         )
         return token
     except ValueError as e:
@@ -57,19 +56,19 @@ async def login_user(
     except HTTPException as e:
         raise e
 
+
 @router.get("/me", response_model=UserOutput)
 async def get_current_user(
-    credentials=Depends(security),
-    repo: UserRepository = Depends(get_user_repository)
+    credentials=Depends(security), repo: UserRepository = Depends(get_user_repository)
 ):
     usecase = GetCurrentUserUseCase(repo)
     user = await usecase.execute(credentials)
     return UserOutput.from_entity(user)
 
+
 @router.post("/logout")
 async def logout_user(
-    credentials=Depends(security),
-    repo: UserRepository = Depends(get_user_repository)
+    credentials=Depends(security), repo: UserRepository = Depends(get_user_repository)
 ):
     usecase = LogoutUserUseCase(repo)
     return await usecase.execute(credentials)

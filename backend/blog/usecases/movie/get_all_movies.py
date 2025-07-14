@@ -9,4 +9,3 @@ class GetAllMoviesUseCase:
 
     async def execute(self) -> List[Movie]:
         return await self.repository.get_all()
-

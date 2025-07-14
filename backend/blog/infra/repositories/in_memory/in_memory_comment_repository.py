@@ -2,14 +2,18 @@ from blog.domain.entities.comment import Comment
 from blog.domain.repositories.comment_repository import CommentRepository
 import pytest
 
+
 class InMemoryCommentRepository(CommentRepository):
     def __init__(self):
         self._comments = {}
 
     @pytest.mark.asyncio
     async def get_by_movie_id(self, movie_id: str) -> list[Comment]:
-        return [comment for comment in self._comments.values() 
-                if comment.movieId == movie_id] 
+        return [
+            comment
+            for comment in self._comments.values()
+            if comment.movieId == movie_id
+        ]
 
     @pytest.mark.asyncio
     async def create(self, comment: Comment) -> None:

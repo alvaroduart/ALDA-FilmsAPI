@@ -12,31 +12,34 @@ from blog.usecases.favorite.remove_from_favorites import RemoveFromFavoritesUseC
 security = HTTPBearer()
 router = APIRouter(prefix="/favorites", tags=["Favorites"])
 
+
 @router.post("/", response_model=favoriteOutput)
 async def add_to_favorites(
     data: favoriteInput,
     credentials=Depends(security),
-    repo: FavoriteRepository = Depends(get_favorite_repository)
+    repo: FavoriteRepository = Depends(get_favorite_repository),
 ):
     usecase = AddToFavoritesUseCase(repo)
     await usecase.execute(data.userId, data.movieId)
     return favoriteOutput(userId=data.userId, movieId=data.movieId)
 
+
 @router.get("/{user_id}", response_model=List[favoriteOutput])
 async def get_user_favorites(
     user_id: str,
     credentials=Depends(security),
-    repo: FavoriteRepository = Depends(get_favorite_repository)
+    repo: FavoriteRepository = Depends(get_favorite_repository),
 ):
     usecase = GetUserFavoritesUseCase(repo)
     favorites = await usecase.execute(user_id)
     return [favoriteOutput.from_entity(f) for f in favorites]
 
+
 @router.delete("/", status_code=204)
 async def remove_from_favorites(
     data: favoriteInput,
     credentials=Depends(security),
-    repo: FavoriteRepository = Depends(get_favorite_repository)
+    repo: FavoriteRepository = Depends(get_favorite_repository),
 ):
     usecase = RemoveFromFavoritesUseCase(repo)
     await usecase.execute(data.userId, data.movieId)

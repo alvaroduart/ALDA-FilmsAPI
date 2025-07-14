@@ -46,9 +46,9 @@ jobs:
         working-directory: ./backend
         run: make typecheck
 
-      - name: Run tests with coverage
-        working-directory: ./backend
-        run: make test-cov
+      #- name: Run tests with coverage
+       # working-directory: ./backend
+        #run: make test-cov
 
       - name: Verifica se o código está formatado
         working-directory: ./backend

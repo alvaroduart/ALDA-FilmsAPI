@@ -7,6 +7,4 @@ class CreateMovieUseCase:
         self.repository = repository
 
     async def execute(self, movie: Movie) -> None:
-       await self.repository.create(movie)
-    
-    
+        await self.repository.create(movie)

@@ -8,4 +8,3 @@ class GetMovieByIdUseCase:
 
     async def execute(self, movie_id: str) -> Movie:
         return await self.repository.get_by_id(movie_id)
-

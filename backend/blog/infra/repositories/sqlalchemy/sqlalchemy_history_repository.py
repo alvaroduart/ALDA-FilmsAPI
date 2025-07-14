@@ -24,8 +24,7 @@ class SQLAlchemyHistoryRepository(HistoryRepository):
     async def remove_from_history(self, user_id: str, movie_id: str) -> None:
         result = await self.session.execute(
             select(HistoryModel).where(
-                HistoryModel.user_id == user_id,
-                HistoryModel.movie_id == movie_id
+                HistoryModel.user_id == user_id, HistoryModel.movie_id == movie_id
             )
         )
         history_model = result.scalar_one_or_none()
@@ -38,8 +37,7 @@ class SQLAlchemyHistoryRepository(HistoryRepository):
     async def is_in_history(self, user_id: str, movie_id: str) -> bool:
         result = await self.session.execute(
             select(HistoryModel).where(
-                HistoryModel.user_id == user_id,
-                HistoryModel.movie_id == movie_id
+                HistoryModel.user_id == user_id, HistoryModel.movie_id == movie_id
             )
         )
         return result.scalar_one_or_none() is not None

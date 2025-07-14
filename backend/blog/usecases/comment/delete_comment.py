@@ -6,5 +6,4 @@ class DeleteCommentUseCase:
         self.repository = repository
 
     async def execute(self, comment_id: str) -> None:
-       await self.repository.delete(comment_id)
-
+        await self.repository.delete(comment_id)

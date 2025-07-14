@@ -12,9 +12,8 @@ class LoginUserUseCase:
         user = await self.repository.get_by_email(email)
         if not user:
             raise ValueError("User not found")
-        
+
         if user.password.value() != password.value():
             raise ValueError("senha inválida")
-        
-        return user
 
+        return user
