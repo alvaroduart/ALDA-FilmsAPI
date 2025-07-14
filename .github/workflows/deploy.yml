@@ -68,10 +68,10 @@ jobs:
 
       - name: Build Docker image
         working-directory: ./
-        run: docker build -f Dockerfile.prod -t ${{ secrets.DOCKER_HUB_USERNAME }}/blog-api:latest backend
+        run: docker build -f Dockerfile.prod -t ${{ secrets.DOCKER_HUB_USERNAME }}/alda:latest backend
 
       - name: Push to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/blog-api:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/alda:latest
 
       - name: Send deploy hook to Render
         run: |
