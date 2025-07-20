@@ -112,7 +112,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-origins = ["http://localhost:5173", "https://alda-films-v2.vercel.app/"]
+origins = ["http://localhost:5173", "https://alda-films-v2.vercel.app"]
 
 # Configuração de CORS
 app.add_middleware(
