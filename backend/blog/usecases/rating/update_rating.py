@@ -6,6 +6,6 @@ class UpdateRatingUseCase:
     def __init__(self, repository: RatingRepository):
         self.repository = repository
 
-    def execute(self, rating: Rating) -> Rating:
+    async def execute(self, rating: Rating) -> Rating:
         """Update an existing rating."""
-        return self.repository.update_rating(rating)
+        return await self.repository.update_rating(rating)

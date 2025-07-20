@@ -22,7 +22,8 @@ class SQLAlchemyRatingRepository:
             )
         )
         new_rating_model = rating_sel.scalar_one_or_none()
-
+        if not new_rating_model:
+            raise ValueError("Rating not found")
         return new_rating_model.to_entity()
 
     async def update_rating(self, rating: Rating) -> Rating:
@@ -36,7 +37,8 @@ class SQLAlchemyRatingRepository:
             )
         )
         new_rating_model = rating_sel.scalar_one_or_none()
-
+        if not new_rating_model:
+            raise ValueError("Rating not found")
         return new_rating_model.to_entity()
 
     async def is_rated(self, user_id: str, movie_id: str) -> bool:

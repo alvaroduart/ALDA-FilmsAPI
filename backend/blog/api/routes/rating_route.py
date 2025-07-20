@@ -24,6 +24,7 @@ async def create_rating(
 ):
     usecase = AddRatingUseCase(repo)
     result = await usecase.execute(user.id, data.movieId, data.rating)
+
     return RatingOutput.from_entity(result)
 
 
