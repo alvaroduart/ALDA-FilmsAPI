@@ -1,11 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import HTTPBearer
-from blog.api.schemas.user_schema import UserOutput, LoginInput, UserCreateInput
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from blog.api.security import create_access_token
+from blog.api.schemas.user_schema import (
+    LoginInput,
+    TokenResponse,
+    user_to_output,
+    UserCreateInput,
+    UserOutput,
+)
 from blog.domain.entities.user import User
 from blog.domain.value_objects.email_vo import Email
-from blog.domain.value_objects.password import Password
+from blog.domain.value_objects.password import Password, PasswordValidationError
 from blog.domain.repositories.user_repository import UserRepository
-from blog.api.deps import get_user_repository
+from blog.api.deps import get_user_repository, get_current_user
 from blog.usecases.user.get_current_user import GetCurrentUserUseCase
 from blog.usecases.user.login_user import LoginUserUseCase
 from blog.usecases.user.logout_user import LogoutUserUseCase
@@ -26,9 +33,9 @@ async def register_user(
             name=user.username,
             email=Email(user.email),
             password=Password(user.password),
-            favoriteMovies=[],
-            watchedMovies=[],
         )
+    except PasswordValidationError as p:
+        raise HTTPException(status_code=400, detail=str(p))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -41,16 +48,25 @@ async def register_user(
     return UserOutput.from_entity(new_user)
 
 
-@router.post("/login")
+@router.post("/login", response_model=TokenResponse)
 async def login_user(
     login_data: LoginInput, repo: UserRepository = Depends(get_user_repository)
 ):
     try:
         usecase = LoginUserUseCase(repo)
-        token = await usecase.execute(
+        user = await usecase.execute(
             Email(login_data.email), Password(login_data.password)
         )
-        return token
+
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuário not found")
+
+        token = create_access_token(data={"sub": str(user.id)})
+        return TokenResponse(
+            access_token=token,
+            token_type="bearer",
+            user=user_to_output(user),
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except HTTPException as e:
@@ -58,12 +74,14 @@ async def login_user(
 
 
 @router.get("/me", response_model=UserOutput)
-async def get_current_user(
-    credentials=Depends(security), repo: UserRepository = Depends(get_user_repository)
+async def get_curr_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    user: User = Depends(get_current_user),
 ):
-    usecase = GetCurrentUserUseCase(repo)
-    user = await usecase.execute(credentials)
-    return UserOutput.from_entity(user)
+    try:
+        return {"id": user.id, "username": user.name, "email": user.email.value()}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.post("/logout")
@@ -71,4 +89,4 @@ async def logout_user(
     credentials=Depends(security), repo: UserRepository = Depends(get_user_repository)
 ):
     usecase = LogoutUserUseCase(repo)
-    return await usecase.execute(credentials)
+    return await usecase.execute()

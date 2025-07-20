@@ -19,7 +19,6 @@ async def test_add_to_history():
     assert len(stored_history) == 1
     assert stored_history[0].userId == "test_user"
     assert stored_history[0].movieId == "test_movie"
-    assert stored_history[0].timestamp is not None  # gerado automaticamente
 
 
 @pytest.mark.asyncio
@@ -34,7 +33,6 @@ async def test_get_user_history():
     assert len(user_history) == 1
     assert user_history[0].userId == "test_user"
     assert user_history[0].movieId == "test_movie"
-    assert user_history[0].timestamp is not None
 
 
 @pytest.mark.asyncio

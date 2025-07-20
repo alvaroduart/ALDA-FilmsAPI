@@ -1,6 +1,6 @@
 import pytest
 from blog.domain.value_objects.email_vo import Email
-from blog.domain.value_objects.password import Password
+from blog.domain.value_objects.password import Password, PasswordValidationError
 
 
 def test_valid_email():
@@ -13,26 +13,42 @@ def test_invalid_email():
         Email("invalid-email")
 
 
-def test_valid_password():
-    password = Password("securePassword123")
-    assert password.value() == "securePassword123"
+@pytest.mark.parametrize(
+    "senha_invalida",
+    [
+        "curta",  # Menos de 8 caracteres
+        "semmaiuscula1!",  # Sem letra maiúscula
+        "SEMMINUSCULA1!",  # Sem letra minúscula
+        "SemNumero!",  # Sem número
+        "SemEspecial1",  # Sem caractere especial
+    ],
+)
+def test_senhas_invalidas_disparam_erro(senha_invalida):
+    with pytest.raises(PasswordValidationError):
+        Password(senha_invalida)
 
 
-def test_invalid_password():
-    with pytest.raises(ValueError):
-        Password("short")  # Deve falhar, pois a senha é muito curta
+# Teste de criação de senha válida
+def test_criar_password_valido():
+    senha = "Senha@123!"
+    password = Password(senha)
+    assert isinstance(password, Password)
+    assert password.verify(Password(senha)._hashed)
 
 
-def test_password_equality():
-    password1 = Password("securePassword123")
-    password2 = Password("securePassword123")
-    assert password1 == password2
+# Teste de verificação com senha incorreta
+def test_password_invalida_nao_verifica():
+    senha = "Senha@123!"
+    outra_senha = Password("Errada456@")._hashed
+    password = Password(senha)
+    assert not password.verify(outra_senha)
 
 
-def test_password_inequality():
-    password1 = Password("securePassword123")
-    password2 = Password("differentPassword456")
-    assert password1 != password2
+# Teste de representação em string (usando __str__)
+def test_str_password_exibe_hash():
+    senha = "Senha@123!"
+    password = Password(senha)
+    assert str(password) == password._hashed
 
 
 def test_email_equality():

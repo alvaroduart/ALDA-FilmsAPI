@@ -1,16 +1,19 @@
 from fastapi import APIRouter, Depends, Query
 from fastapi.security import HTTPBearer
-from typing import List
+from typing import List, Optional
 from blog.api.schemas.movie_schema import CreateMovieInput, MovieOutput
 from blog.domain.entities.movie import Movie
 from blog.domain.repositories.movie_repository import MovieRepository
-from blog.api.deps import get_movie_repository
+from blog.api.deps import get_movie_repository, get_optional_user, get_rating_repository
 from blog.usecases.movie.create_movie import CreateMovieUseCase
 from blog.usecases.movie.get_all_movies import GetAllMoviesUseCase
 from blog.usecases.movie.get_movie_by_id import GetMovieByIdUseCase
 from blog.usecases.movie.search_movies import SearchMoviesUseCase
 
 import uuid
+from blog.domain.entities.user import User
+from blog.usecases.rating.get_rating import GetRatingUseCase
+from blog.domain.repositories.rating_repository import RatingRepository
 
 security = HTTPBearer()
 router = APIRouter(prefix="/movies", tags=["Movies"])
@@ -46,11 +49,22 @@ async def get_all_movies(repo: MovieRepository = Depends(get_movie_repository)):
 
 @router.get("/{movie_id}", response_model=MovieOutput)
 async def get_movie_by_id(
-    movie_id: str, repo: MovieRepository = Depends(get_movie_repository)
+    movie_id: str,
+    repo: MovieRepository = Depends(get_movie_repository),
+    repoRating: RatingRepository = Depends(get_rating_repository),
+    user: Optional[User] = Depends(get_optional_user),
 ):
     usecase = GetMovieByIdUseCase(repo)
     movie = await usecase.execute(movie_id)
-    return MovieOutput.from_entity(movie)
+
+    if user:
+        usecaseRating = GetRatingUseCase(repoRating)
+        rating = await usecaseRating.execute(user.id, movie_id)
+        if not rating:
+            rating = None
+    else:
+        rating = None
+    return MovieOutput.from_entity(movie, rating.rating if rating else None)
 
 
 @router.get("/search/", response_model=List[MovieOutput])

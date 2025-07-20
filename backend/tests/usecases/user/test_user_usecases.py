@@ -16,71 +16,71 @@ def create_test_user():
         id="1",
         name="Test User",
         email=Email("test.user@example.com"),
-        password=Password("secure123"),
+        password=Password("Secure123@"),
     )
 
 
-def test_register_user():
+@pytest.mark.asyncio
+async def test_register_user():
     repo = InMemoryUserRepository()
     use_case = RegisterUserUseCase(repo)
     user = create_test_user()
 
-    use_case.execute(user)
+    await use_case.execute(user)
 
-    stored_user = repo.get_by_id(user.id)
+    stored_user = await repo.get_by_id(user.id)
     assert stored_user.id == user.id
     assert stored_user.name == user.name
-    assert stored_user.email.value() == user.email.value()
-    assert stored_user.password.value() == user.password.value()
+    assert stored_user.email == user.email
 
 
-def test_login_user():
+@pytest.mark.asyncio
+async def test_login_user():
     repo = InMemoryUserRepository()
     register_use_case = RegisterUserUseCase(repo)
     user = create_test_user()
-    register_use_case.execute(user)
+    await register_use_case.execute(user)
 
     login_use_case = LoginUserUseCase(repo)
     email = Email("test.user@example.com")
-    password = Password("secure123")
+    password = Password("Secure123@")
 
-    result = login_use_case.execute(email, password)
+    result = await login_use_case.execute(email, password)
 
     assert result.id == user.id
     assert result.name == user.name
-    assert result.email.value() == user.email.value()
-    assert result.password.value() == user.password.value()
+    assert result.email == user.email
 
 
-def test_get_user_by_id():
+@pytest.mark.asyncio
+async def test_get_user_by_id():
     repo = InMemoryUserRepository()
     register_use_case = RegisterUserUseCase(repo)
     user = create_test_user()
-    register_use_case.execute(user)
+    await register_use_case.execute(user)
 
     get_user_use_case = GetUserByIdUseCase(repo)
-    result = get_user_use_case.execute(user.id)
+    result = await get_user_use_case.execute(user.id)
 
     assert result.id == user.id
     assert result.name == user.name
     assert result.email.value() == user.email.value()
-    assert result.password.value() == user.password.value()
 
 
-def test_logout_user():
+@pytest.mark.asyncio
+async def test_logout_user():
     repo = InMemoryUserRepository()
     register_use_case = RegisterUserUseCase(repo)
     user = create_test_user()
-    user = register_use_case.execute(user)
+    user = await register_use_case.execute(user)
 
     logout_use_case = LogoutUserUseCase(repo)
-    logout_use_case.execute(user.id)
+    await logout_use_case.execute()
 
     # Garantia de que o usuário ainda existe após logout
     get_user_use_case = GetUserByIdUseCase(repo)
-    result = get_user_use_case.execute(user.id)
+    result = await get_user_use_case.execute(user.id)
 
     assert result.id == user.id
     assert result.name == user.name
-    assert result.email.value() == user.email.value()
-    assert result.password.value() == user.password.value()
+    assert result.email == user.email

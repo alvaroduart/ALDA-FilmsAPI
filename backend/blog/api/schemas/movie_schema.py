@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 from typing import Optional
 from pydantic import ConfigDict
 
@@ -6,7 +6,7 @@ from pydantic import ConfigDict
 class CreateMovieInput(BaseModel):
     movieid: str = Field(..., description="Identificador único do filme")
     title: str = Field(..., description="Título do filme")
-    image: HttpUrl = Field(..., description="URL da imagem do filme")
+    image: str = Field(..., description="URL da imagem do filme")
     rating: Optional[float] = Field(
         None,
         ge=0,
@@ -26,7 +26,7 @@ class CreateMovieInput(BaseModel):
 class MovieOutput(BaseModel):
     id: str = Field(..., description="Identificador único do filme")
     title: str = Field(..., min_length=1, max_length=150, description="Título do filme")
-    image: HttpUrl = Field(..., description="URL da imagem do filme")
+    image: str = Field(..., description="URL da imagem do filme")
     rating: Optional[float] = Field(
         None,
         ge=0,
@@ -41,11 +41,17 @@ class MovieOutput(BaseModel):
     director: str = Field(
         ..., min_length=3, max_length=100, description="Diretor do filme"
     )
+    userRating: Optional[float] = Field(
+        None,
+        ge=0,
+        le=5,
+        description="Avaliação do usuário (0 a 5 estrelas), se disponível",
+    )
 
     model_config = ConfigDict(from_attributes=True)
 
     @classmethod
-    def from_entity(cls, movie):
+    def from_entity(cls, movie, user_rating: Optional[float] = None) -> "MovieOutput":
         return cls(
             id=movie.id,
             title=movie.title,
@@ -55,4 +61,5 @@ class MovieOutput(BaseModel):
             genre=movie.genre,
             duration=movie.duration,
             director=movie.director,
+            userRating=user_rating,
         )

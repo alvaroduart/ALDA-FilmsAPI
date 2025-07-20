@@ -20,7 +20,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    async def logout(self, user_id: str) -> None:
+    async def logout(self) -> None:
         pass
 
     @abstractmethod

@@ -1,25 +1,16 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 from datetime import datetime
+from blog.api.schemas.user_schema import UserOutput
 
 
 class AddCommentInput(BaseModel):
     movieId: str = Field(
         ..., description="ID do filme ao qual o comentário está relacionado"
     )
-    userId: str = Field(..., description="ID do usuário que está fazendo o comentário")
-    userName: str = Field(
-        ...,
-        min_length=2,
-        max_length=100,
-        description="Nome do usuário que está fazendo o comentário",
-    )
+
     content: str = Field(
         ..., min_length=5, max_length=1000, description="Conteúdo do comentário"
-    )
-    createdAt: Optional[datetime] = Field(
-        default_factory=datetime.now,
-        description="Data e hora em que o comentário foi criado",
     )
 
 
@@ -28,20 +19,8 @@ class UpdateCommentInput(BaseModel):
     movieId: Optional[str] = Field(
         None, description="ID do filme ao qual o comentário está relacionado"
     )
-    userId: Optional[str] = Field(
-        None, description="ID do usuário que fez o comentário"
-    )
-    userName: Optional[str] = Field(
-        None,
-        min_length=2,
-        max_length=100,
-        description="Nome do usuário que fez o comentário",
-    )
     content: Optional[str] = Field(
         None, min_length=5, max_length=1000, description="Conteúdo do comentário"
-    )
-    createdAt: Optional[datetime] = Field(
-        None, description="Data e hora em que o comentário foi criado"
     )
 
 
@@ -59,7 +38,10 @@ class CommentOutput(BaseModel):
     movieId: str = Field(
         ..., description="ID do filme ao qual o comentário está relacionado"
     )
-    userId: str = Field(..., description="ID do usuário que fez o comentário")
+    # serId: str = Field(..., description="ID do usuário que fez o comentário")
+    user: UserOutput = Field(
+        ..., description="Informações do usuário que fez o comentário"
+    )
     userName: str = Field(
         ...,
         min_length=2,
@@ -81,7 +63,8 @@ class CommentOutput(BaseModel):
         return cls(
             id=comment.id,
             movieId=comment.movieId,
-            userId=comment.userId,
+            # userId=comment.userId,
+            user=UserOutput.from_entity(comment.user) if comment.user else None,
             userName=comment.userName,
             content=comment.content,
             createdAt=comment.createdAt,

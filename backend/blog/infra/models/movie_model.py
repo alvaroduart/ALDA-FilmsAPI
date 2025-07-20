@@ -21,7 +21,7 @@ class MovieModel(Base):
         sa.String(20), nullable=False
     )  # ← ALTERADO AQUI
     director: Mapped[str] = mapped_column(sa.String(100), nullable=False)
-    createdAt: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(sa.DateTime, default=datetime.utcnow)
 
     comments = relationship(
         "CommentModel", back_populates="movie", cascade="all, delete-orphan"
@@ -31,6 +31,9 @@ class MovieModel(Base):
     )
     watchedByUsers = relationship(
         "HistoryModel", back_populates="movie", cascade="all, delete-orphan"
+    )
+    ratings = relationship(
+        "RatingModel", back_populates="movie", cascade="all, delete-orphan"
     )
 
     def to_entity(self) -> Movie:

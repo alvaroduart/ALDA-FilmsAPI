@@ -55,7 +55,7 @@ async def db_session(setup_engine):
 
 
 @pytest_asyncio.fixture
-async def client(db_session):
+async def async_client(db_session):
     """Cria cliente de teste com override de dependências."""
 
     async def override_get_db_session():

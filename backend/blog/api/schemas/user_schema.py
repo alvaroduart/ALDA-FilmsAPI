@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
+from blog.domain.entities.user import User
 
 
 class UserCreateInput(BaseModel):
@@ -30,12 +31,6 @@ class UserOutput(BaseModel):
         ..., min_length=3, max_length=50, description="Username of the user"
     )
     email: EmailStr = Field(..., description="Email address of the user")
-    favorites: list[str] = Field(
-        default_factory=list, description="List of favorite movie IDs"
-    )
-    history: list[str] = Field(
-        default_factory=list, description="List of watched movie IDs"
-    )
 
     @classmethod
     def from_entity(cls, user):
@@ -43,6 +38,18 @@ class UserOutput(BaseModel):
             id=str(user.id),
             username=getattr(user, "username", getattr(user, "name", "")),
             email=user.email.value(),
-            favorites=[str(m.id) for m in user.favoriteMovies],
-            history=[str(m.id) for m in user.watchedMovies],
         )
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserOutput
+
+
+def user_to_output(user: User) -> UserOutput:
+    return UserOutput(
+        id=str(user.id),
+        username=getattr(user, "username", getattr(user, "name", "")),
+        email=user.email.value(),
+    )

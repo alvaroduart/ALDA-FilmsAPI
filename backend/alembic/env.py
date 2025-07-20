@@ -16,6 +16,7 @@ from blog.infra.models.comment_model import CommentModel
 from blog.infra.models.favorite_model import FavoriteModel
 from blog.infra.models.history_model import HistoryModel
 from blog.infra.models.contact_model import ContactModel
+from blog.infra.models.rating_model import RatingModel
 
 # Carrega as configurações do arquivo .ini
 config = context.config

@@ -6,7 +6,7 @@ from datetime import datetime
 class ContactInput(BaseModel):
     name: str = Field(
         ...,
-        min_length=10,
+        min_length=5,
         max_length=100,
         description="Nome da pessoa que está entrando em contato",
     )
@@ -25,7 +25,7 @@ class ContactOutput(BaseModel):
     )
     name: str = Field(
         ...,
-        min_length=10,
+        min_length=5,
         max_length=100,
         description="Nome da pessoa que entrou em contato",
     )

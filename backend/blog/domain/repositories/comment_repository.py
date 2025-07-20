@@ -9,11 +9,11 @@ class CommentRepository(ABC):
         pass
 
     @abstractmethod
-    async def create(self, comment: Comment) -> None:
+    async def create(self, comment: Comment) -> Comment | None:
         pass
 
     @abstractmethod
-    async def update(self, comment: Comment) -> None:
+    async def update(self, comment: Comment) -> Comment | None:
         pass
 
     @abstractmethod

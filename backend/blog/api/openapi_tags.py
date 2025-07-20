@@ -23,4 +23,8 @@ openapi_tags = [
         "name": "Contact",
         "description": "Formulário de contato para feedback e suporte.",
     },
+    {
+        "name": "Ratings",
+        "description": "Gerenciamento de avaliações de filmes.",
+    },
 ]

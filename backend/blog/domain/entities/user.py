@@ -5,18 +5,8 @@ from typing import Optional
 
 
 class User:
-    def __init__(
-        self,
-        id: str,
-        name: str,
-        email: Email,
-        password: Password,
-        favoriteMovies: list[str],
-        watchedMovies: list[str],
-    ):
+    def __init__(self, id: str, name: str, email: Email, password: Password):
         self.id = id
         self.name = name
         self.email = email
         self.password = password
-        self.favoriteMovies: Optional[list[str]] = favoriteMovies
-        self.watchedMovies: Optional[list[str]] = watchedMovies

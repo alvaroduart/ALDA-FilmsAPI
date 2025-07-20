@@ -26,6 +26,9 @@ class UserModel(Base):
     comments = relationship(
         "CommentModel", back_populates="user", cascade="all, delete-orphan"
     )
+    ratings = relationship(
+        "RatingModel", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def to_entity(self) -> User:
         return User(
@@ -33,8 +36,6 @@ class UserModel(Base):
             name=self.username,
             email=Email(self.email),
             password=Password(self.password),
-            favoriteMovies=[],
-            watchedMovies=[],
         )
 
     @classmethod
@@ -42,6 +43,6 @@ class UserModel(Base):
         return cls(
             id=user.id,
             username=user.name,
-            email=user.email.value(),
-            password=user.password.value(),
+            email=str(user.email),
+            password=str(user.password),
         )

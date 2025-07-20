@@ -16,14 +16,16 @@ class InMemoryCommentRepository(CommentRepository):
         ]
 
     @pytest.mark.asyncio
-    async def create(self, comment: Comment) -> None:
+    async def create(self, comment: Comment) -> Comment:
         self._comments[comment.id] = comment
+        return comment
 
     @pytest.mark.asyncio
-    async def update(self, comment: Comment) -> None:
+    async def update(self, comment: Comment) -> Comment:
         if comment.id not in self._comments:
             raise ValueError(f"Comment with id {comment.id} not found")
         self._comments[comment.id] = comment
+        return comment
 
     @pytest.mark.asyncio
     async def delete(self, comment_id: str) -> None:

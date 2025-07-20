@@ -6,7 +6,7 @@ class UpdateCommentUseCase:
     def __init__(self, repository: CommentRepository):
         self.repository = repository
 
-    async def execute(self, comment: Comment) -> None:
+    async def execute(self, comment: Comment) -> Comment | None:
         if not comment.id:
             raise ValueError("Comment ID is required for update")
-        await self.repository.update(comment)
+        return await self.repository.update(comment)

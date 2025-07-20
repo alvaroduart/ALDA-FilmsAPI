@@ -12,9 +12,10 @@ class InMemoryHistoryRepository(HistoryRepository):
         return [history for history in self._history if history.userId == user_id]
 
     @pytest.mark.asyncio
-    async def add_to_history(self, history: History) -> None:
+    async def add_to_history(self, history: History) -> History:
         if not await self.is_in_history(history.userId, history.movieId):
             self._history.append(history)
+        return history
 
     @pytest.mark.asyncio
     async def remove_from_history(self, user_id: str, movie_id: str) -> None:

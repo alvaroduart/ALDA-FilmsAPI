@@ -6,6 +6,5 @@ class AddCommentUseCase:
     def __init__(self, repository: CommentRepository):
         self.repository = repository
 
-    async def execute(self, comment: Comment) -> Comment:
-        await self.repository.create(comment)
-        return comment
+    async def execute(self, comment: Comment) -> Comment | None:
+        return await self.repository.create(comment)

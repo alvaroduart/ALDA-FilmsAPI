@@ -8,7 +8,7 @@ class HistoryRepository(ABC):
         pass
 
     @abstractmethod
-    async def add_to_history(self, history: History) -> None:
+    async def add_to_history(self, history: History) -> History:
         pass
 
     @abstractmethod

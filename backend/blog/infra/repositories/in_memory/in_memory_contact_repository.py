@@ -9,4 +9,4 @@ class InMemoryContactRepository(ContactRepository):
 
     @pytest.mark.asyncio
     async def create_contact(self, contact):
-        return super().create_contact(contact)
+        self.contacts[contact.id] = contact

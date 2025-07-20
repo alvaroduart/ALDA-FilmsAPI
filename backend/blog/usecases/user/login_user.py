@@ -9,11 +9,5 @@ class LoginUserUseCase:
         self.repository = repository
 
     async def execute(self, email: Email, password: Password) -> User:
-        user = await self.repository.get_by_email(email)
-        if not user:
-            raise ValueError("User not found")
-
-        if user.password.value() != password.value():
-            raise ValueError("senha inválida")
-
+        user = await self.repository.login(email, password)
         return user

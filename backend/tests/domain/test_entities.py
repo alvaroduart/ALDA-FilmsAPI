@@ -68,18 +68,9 @@ def test_movie_creation_with_defaults():
 def test_user_creation_with_email_password():
     email = Email("user@example.com")
     password = Password("StrongPass123!")
-    user = User(
-        id="user1",
-        name="User One",
-        email=email,
-        password=password,
-        favoriteMovies=["mov1", "mov2"],
-        watchedMovies=["mov3"],
-    )
+    user = User(id="user1", name="User One", email=email, password=password)
     assert user.id == "user1"
     assert user.name == "User One"
     assert isinstance(user.email, Email)
     assert user.email.value() == "user@example.com"
     assert isinstance(user.password, Password)
-    assert user.favoriteMovies == ["mov1", "mov2"]
-    assert user.watchedMovies == ["mov3"]

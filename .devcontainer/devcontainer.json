@@ -20,6 +20,7 @@
     "ms-python.vscode-pylance",
     "ms-vscode.makefile-tools",
     "ms-azuretools.vscode-docker",
-    "humao.rest-client"
+    "humao.rest-client",
+    "Bar.python-import-helper"
   ]
 }

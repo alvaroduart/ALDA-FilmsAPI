@@ -28,6 +28,7 @@ class FavoriteModel(Base):
         return Favorite(
             userId=self.userId,
             movieId=self.movieId,
+            movie=self.movie.to_entity() if self.movie else None,
         )
 
     @classmethod

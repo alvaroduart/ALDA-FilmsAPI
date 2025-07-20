@@ -34,6 +34,7 @@ class CommentModel(Base):
             userName=self.userName,
             content=self.content,
             createdAt=self.createdAt,
+            user=self.user.to_entity() if self.user else None,
         )
 
     @classmethod

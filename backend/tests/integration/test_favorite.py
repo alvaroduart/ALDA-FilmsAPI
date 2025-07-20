@@ -3,7 +3,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_history(async_client: AsyncClient):
+async def test_favorites(async_client: AsyncClient):
     # Create a user
     response = await async_client.post(
         "/users/register",
@@ -26,16 +26,6 @@ async def test_history(async_client: AsyncClient):
     login_response = user.json()
     assert "access_token" in login_response
 
-    # Get user history
-    response = await async_client.get(
-        "/history/",
-        headers={"Authorization": f"Bearer {login_response['access_token']}"},
-    )
-    assert response.status_code == 200
-    history = response.json()
-    assert isinstance(history, list)
-    assert len(history) == 0  # Assuming no history exists for a new user
-
     # Create a movie
     response = await async_client.post(
         "/movies/",
@@ -55,42 +45,48 @@ async def test_history(async_client: AsyncClient):
     created_movie = response.json()
     assert created_movie["title"] == "Test Movie"
 
-    # Add the movie to user's history
+    # Add the movie to favorites
     response = await async_client.post(
-        "/history/",
+        f"/favorites/",
         json={"movieId": created_movie["id"]},
         headers={"Authorization": f"Bearer {login_response['access_token']}"},
     )
     assert response.status_code == 200
-    history_response = response.json()
-    assert history_response["movie"]["id"] == created_movie["id"]
+    favorite_response = response.json()
+    assert favorite_response["movie"]["title"] == "Test Movie"
 
-    # Now check the history again
+    # Add again to favorites (should raise an error)
+    with pytest.raises(ValueError):
+        response = await async_client.post(
+            f"/favorites/",
+            json={"movieId": created_movie["id"]},
+            headers={"Authorization": f"Bearer {login_response['access_token']}"},
+        )
+
+    # Get user's favorites
     response = await async_client.get(
-        "/history/",
+        "/favorites/",
         headers={"Authorization": f"Bearer {login_response['access_token']}"},
     )
     assert response.status_code == 200
-    history = response.json()
-    assert isinstance(history, list)
-    assert len(history) > 0
-    assert history[0]["movie"]["id"] == created_movie["id"]
+    favorites = response.json()
+    assert len(favorites) == 1
+    assert favorites[0]["movie"]["title"] == "Test Movie"
 
-    # Remove the movie from user's history
+    # Remove the movie from favorites
     response = await async_client.request(
         "DELETE",
-        "/history/",
+        f"/favorites/",
         json={"movieId": created_movie["id"]},
         headers={"Authorization": f"Bearer {login_response['access_token']}"},
     )
     assert response.status_code == 204
 
-    # Check the history again to ensure the movie was removed
+    # Verify the movie is no longer in favorites
     response = await async_client.get(
-        "/history/",
+        "/favorites/",
         headers={"Authorization": f"Bearer {login_response['access_token']}"},
     )
     assert response.status_code == 200
-    history = response.json()
-    assert isinstance(history, list)
-    assert len(history) == 0
+    favorites = response.json()
+    assert len(favorites) == 0

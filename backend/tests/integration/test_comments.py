@@ -1,94 +1,98 @@
-import pytest
 from httpx import AsyncClient
-import datetime
+import pytest
 
 
 @pytest.mark.asyncio
-async def test_create_comment(async_client: AsyncClient, user_token: str):
+async def test_coments_flow(async_client: AsyncClient):
+    # Create a user
+    response = await async_client.post(
+        "/users/register",
+        json={
+            "username": "testuser",
+            "email": "testuser@example.com",
+            "password": "testPassword1@",
+        },
+    )
+    assert response.status_code == 200
+    created_user = response.json()
+    assert created_user["username"] == "testuser"
+
+    # Log in the user
+    user = await async_client.post(
+        "/users/login",
+        json={"email": "testuser@example.com", "password": "testPassword1@"},
+    )
+    assert user.status_code == 200
+    login_response = user.json()
+    assert "access_token" in login_response
+
+    # Create a movie
+    response = await async_client.post(
+        "/movies/",
+        json={
+            "movieid": "123e4567-e89b-12d3-a456-426614174000",
+            "title": "Test Movie",
+            "image": "http://example.com/image.jpg",
+            "rating": 4,
+            "description": "A test movie description.",
+            "genre": "Action",
+            "duration": "120 min",
+            "director": "Test Director",
+        },
+        headers={"Authorization": f"Bearer {login_response['access_token']}"},
+    )
+    assert response.status_code == 200
+    created_movie = response.json()
+    assert created_movie["title"] == "Test Movie"
+
     # Create a comment
     response = await async_client.post(
-        "/comments",
-        json={
-            "movieId": "12345678-1234-5678-1234-567812345678",
-            "content": "This is a test comment",
-            "createdAt": datetime.datetime.now().isoformat(),
-        },
-        headers={"Authorization": f"Bearer {user_token}"},
+        "/comments/",
+        json={"movieId": created_movie["id"], "content": "This is a test comment."},
+        headers={"Authorization": f"Bearer {login_response['access_token']}"},
     )
-
-    assert response.status_code == 201
-    data = response.json()
-    assert data["content"] == "This is a test comment"
-    assert data["movieId"] == "12345678-1234-5678-1234-567812345678"
-
-
-@pytest.mark.asyncio
-async def test_get_comments(async_client: AsyncClient, user_token: str):
-    # Get comments for a movie
-    response = await async_client.get(
-        "/comments/12345678-1234-5678-1234-567812345678",
-        headers={"Authorization": f"Bearer {user_token}"},
-    )
-
     assert response.status_code == 200
-    data = response.json()
-    assert isinstance(data, list)
-    if data:
-        assert "content" in data[0]
-        assert "movieId" in data[0]
-
-
-@pytest.mark.asyncio
-async def test_delete_comment(async_client: AsyncClient, user_token: str):
-    # Create a comment to delete
-    create_response = await async_client.post(
-        "/comments",
-        json={
-            "movieId": "12345678-1234-5678-1234-567812345678",
-            "content": "This comment will be deleted",
-            "createdAt": datetime.datetime.now().isoformat(),
-        },
-        headers={"Authorization": f"Bearer {user_token}"},
-    )
-
-    assert create_response.status_code == 201
-    comment_id = create_response.json()["id"]
-
-    # Delete the comment
-    delete_response = await async_client.delete(
-        f"/comments/{comment_id}", headers={"Authorization": f"Bearer {user_token}"}
-    )
-
-    assert delete_response.status_code == 204
-
-
-@pytest.mark.asyncio
-async def test_update_comment(async_client: AsyncClient, user_token: str):
-    # Create a comment to update
-    create_response = await async_client.post(
-        "/comments",
-        json={
-            "movieId": "12345678-1234-5678-1234-567812345678",
-            "content": "This comment will be updated",
-            "createdAt": datetime.datetime.now().isoformat(),
-        },
-        headers={"Authorization": f"Bearer {user_token}"},
-    )
-
-    assert create_response.status_code == 201
-    comment_id = create_response.json()["id"]
+    created_comment = response.json()
+    assert created_comment["content"] == "This is a test comment."
 
     # Update the comment
-    update_response = await async_client.put(
-        f"/comments/{comment_id}",
+    response = await async_client.put(
+        "/comments/",
         json={
-            "content": "This is the updated comment",
-            "createdAt": datetime.datetime.now().isoformat(),
+            "id": created_comment["id"],
+            "movieId": created_movie["id"],
+            "content": "This is an updated test comment.",
         },
-        headers={"Authorization": f"Bearer {user_token}"},
+        headers={"Authorization": f"Bearer {login_response['access_token']}"},
     )
+    assert response.status_code == 200
+    updated_comment = response.json()
+    assert updated_comment["content"] == "This is an updated test comment."
 
-    assert update_response.status_code == 200
-    data = update_response.json()
-    assert data["content"] == "This is the updated comment"
-    assert data["id"] == comment_id
+    # Get comments by movie
+    response = await async_client.get(
+        f"/comments/movie/{created_movie['id']}",
+        headers={"Authorization": f"Bearer {login_response['access_token']}"},
+    )
+    assert response.status_code == 200
+    comments = response.json()
+    assert len(comments) > 0
+    assert comments[0]["content"] == "This is an updated test comment."
+
+    # Delete the comment
+    response = await async_client.request(
+        "DELETE",
+        "/comments/",
+        json={"id": created_comment["id"]},
+        headers={"Authorization": f"Bearer {login_response['access_token']}"},
+    )
+    assert response.status_code == 204
+
+    # Verify the comment is deleted
+    response = await async_client.get(
+        f"/comments/movie/{created_movie['id']}",
+        headers={"Authorization": f"Bearer {login_response['access_token']}"},
+    )
+    assert response.status_code == 200
+    comments = response.json()
+    assert len(comments) == 0

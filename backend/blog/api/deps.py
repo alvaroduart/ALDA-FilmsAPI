@@ -27,6 +27,9 @@ from blog.infra.repositories.sqlalchemy.sqlalchemy_contact_repository import (
 
 from blog.infra.database import async_session
 from sqlalchemy.ext.asyncio import AsyncSession
+from blog.infra.repositories.sqlalchemy.sqlalchemy_rating_repository import (
+    SQLAlchemyRatingRepository,
+)
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
@@ -70,7 +73,13 @@ async def get_contact_repository(
     return SQLAlchemyContactRepository(db)
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
+async def get_rating_repository(
+    db: AsyncSession = Depends(get_db_session),
+) -> Any:
+    return SQLAlchemyRatingRepository(db)
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login", auto_error=False)
 
 
 async def get_current_user(
@@ -90,10 +99,39 @@ async def get_current_user(
         user_id = payload.get("sub")
         if not isinstance(user_id, str):
             raise credentials_exception
+        user = await user_repo.get_by_id(user_id)
+        if user is None:
+            raise credentials_exception
+        # await user_repo.set_current_user(user)
     except JWTError:
         raise credentials_exception
 
     user = await user_repo.get_current_user(user_id)
     if user is None:
         raise credentials_exception
+    return user
+
+
+async def get_optional_user(
+    token: str = Depends(oauth2_scheme),
+    user_repo: SQLAlchemyUserRepository = Depends(get_user_repository),
+) -> User | None:
+
+    try:
+        if not token:
+            return None
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
+        user_id = payload.get("sub")
+        if not isinstance(user_id, str):
+            return None
+        user = await user_repo.get_by_id(user_id)
+        if user is None:
+            return None
+    except JWTError:
+        return None
+    user = await user_repo.get_current_user(user_id)
+    if user is None:
+        return None
     return user

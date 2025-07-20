@@ -13,6 +13,12 @@ class SQLAlchemyUserRepository(UserRepository):
 
     async def create(self, user: User) -> None:
         user_model = UserModel.from_entity(user)
+        if await self.get_by_email(user.email):
+            raise ValueError("Email já cadastrado.")
+
+        # Verifica username já cadastrado
+        if await self.get_by_username(user.name):
+            raise ValueError("Username já cadastrado.")
         self.session.add(user_model)
         await self.session.commit()
 
@@ -42,15 +48,16 @@ class SQLAlchemyUserRepository(UserRepository):
         return user_model.to_entity()
 
     async def login(self, email: Email, password: Password) -> User:
+        print(f"{email}: {password}")
         result = await self.session.execute(
             select(UserModel).where(UserModel.email == email.value())
         )
         user_model = result.scalar_one_or_none()
-        if user_model is None or user_model.password != password.value():
+        if user_model is None or not password.verify(user_model.password):
             raise ValueError("Credenciais inválidas")
         return user_model.to_entity()
 
-    async def logout(self, user_id: str) -> None:
+    async def logout(self) -> None:
         # Não há lógica de logout persistente no banco (JWT é stateless)
         pass
 

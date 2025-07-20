@@ -8,7 +8,4 @@ class GetCurrentUserUseCase:
         self.repository = repository
 
     async def execute(self, user_id: str) -> Optional[User]:
-        user = await self.repository.get_current_user(user_id)
-        if not user:
-            raise ValueError("Usuário não encontrado")
-        return user
+        return await self.repository.get_current_user(user_id)

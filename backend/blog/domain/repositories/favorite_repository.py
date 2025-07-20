@@ -8,7 +8,7 @@ class FavoriteRepository(ABC):
         pass
 
     @abstractmethod
-    async def add_favorite(self, favorite: Favorite) -> None:
+    async def add_favorite(self, favorite: Favorite) -> Favorite:
         pass
 
     @abstractmethod

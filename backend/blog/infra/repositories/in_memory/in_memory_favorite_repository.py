@@ -12,9 +12,11 @@ class InMemoryFavoriteRepository(FavoriteRepository):
         return [favorite for favorite in self._favorites if favorite.userId == user_id]
 
     @pytest.mark.asyncio
-    async def add_favorite(self, favorite: Favorite) -> None:
-        if not self.is_favorite(favorite.userId, favorite.movieId):
+    async def add_favorite(self, favorite: Favorite) -> Favorite:
+        if not await self.is_favorite(favorite.userId, favorite.movieId):
             self._favorites.append(favorite)
+            return favorite
+        raise ValueError("Favorite já existe.")
 
     @pytest.mark.asyncio
     async def remove_favorite(self, user_id: str, movie_id: str) -> None:

@@ -6,5 +6,5 @@ class LogoutUserUseCase:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-    async def execute(self, user_id: str) -> None:
-        await self.repository.logout(user_id)
+    async def execute(self) -> None:
+        await self.repository.logout()

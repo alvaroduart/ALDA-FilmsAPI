@@ -7,7 +7,8 @@ from blog.infra.repositories.in_memory.in_memory_contact_repository import (
 )
 
 
-def test_create_contact_use_case():
+@pytest.mark.asyncio
+async def test_create_contact_use_case():
     repo = InMemoryContactRepository()
     use_case = CreateContactUseCase(repo)
 
@@ -18,8 +19,8 @@ def test_create_contact_use_case():
         message="How can I reset my password?",
     )
 
-    use_case.execute(contact)
+    await use_case.execute(contact)
 
     assert len(repo.contacts) == 1
-    assert repo.contacts[0].name == "John Doe"
-    assert repo.contacts[0].email == "john.doe@example.com"
+    assert repo.contacts["contact1"].name == "John Doe"
+    assert repo.contacts["contact1"].email == "john.doe@example.com"
