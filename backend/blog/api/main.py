@@ -112,10 +112,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-origins = [
-    "http://localhost:5173",
-    "https://alda-filmsapi.onrender.com"
-]
+origins = ["http://localhost:5173", "https://alda-filmsapi.onrender.com"]
 
 # Configuração de CORS
 app.add_middleware(
